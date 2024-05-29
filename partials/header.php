@@ -1,5 +1,14 @@
 <?php
-require './config/database.php'
+require './config/database.php';
+// fetch current user from database
+if(isset($_SESSION['user-id'])) {
+    $id = filter_var($_SESSION['user-id'], FILTER_SANITIZE_NUMBER_INT);
+    $query = "SELECT avatar FROM users WHERE id='$id'";
+    $result = mysqli_query($connection, $query);
+    $avatar = mysqli_fetch_assoc($result);
+
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +20,7 @@ require './config/database.php'
     <title>PHP & MySQL Blog Application with Admin Panel</title>
 
     <!-- custom stylesheet -->
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="<?= ROOT_URL ?>css/style.css">
     <!-- icons cdn -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <!-- montserrat font -->
@@ -21,22 +30,25 @@ require './config/database.php'
 
     <nav>
         <div class="container nav__container">
-            <a href="<?= ROOT_URL ?>index.php" class="nav__logo">EGATOR</a>
+            <a href="<?= ROOT_URL ?>index.php" class="nav__logo">BLOG</a>
             <ul class="nav__items">
                 <li><a href="<?= ROOT_URL ?>blog.php">Blog</a></li>
                 <li><a href="<?= ROOT_URL ?>about.php">About</a></li>
                 <li><a href="<?= ROOT_URL ?>services.php">Services</a></li>
                 <li><a href="<?= ROOT_URL ?>contact.php">Contact</a></li>
-                <!-- <li><a href="<?= ROOT_URL ?>signin.php">Sign in</a></li> -->
-                <li class="nav__profile">
+                <?php if(isset($_SESSION['user-id'])): ?>
+                    <li class="nav__profile">
                     <div class="avatar">
-                        <img src="./images/avatar1.jpg" alt="">
+                    <img src="<?= ROOT_URL . 'images/' . $avatar['avatar'] ?>" alt="">
                     </div>
                     <ul>
-                        <li><a href="<?= ROOT_URL ?>/admin/dashboard.php">Dashboard</a></li>
+                        <li><a href="<?= ROOT_URL ?>admin/index.php">Dashboard</a></li>
                         <li><a href="<?= ROOT_URL ?>logout.php">Logout</a></li>
                     </ul>
                 </li>
+                <?php else: ?>
+                <li><a href="<?= ROOT_URL ?>signin.php">Sign in</a></li>
+                <?php endif ?>
             </ul>
 
             <button id="open__nav-btn"><i class="uil uil-bars"></i></button>

@@ -9,3 +9,4 @@ define('DB_PASS', 'admin1234');
 define('DB_NAME', 'blog');
 
 ?>
+
